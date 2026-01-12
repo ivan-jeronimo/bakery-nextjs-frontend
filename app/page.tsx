@@ -1,65 +1,77 @@
-import Image from "next/image";
+import HeroSection from "../components/HeroSection";
+import LogoMottoSection from "../components/LogoMottoSection";
+import HistorySection from "../components/HistorySection";
+import CtaSection from "../components/CtaSection";
+import ProductSection from "../components/ProductSection";
+import DividerSection from "../components/DividerSection";
+import HowItWorksSection from "../components/HowItWorksSection";
 
 export default function Home() {
+  
+  // Datos para la sección de Panes (Ahora con más de 4 para activar el slider)
+  const panesProducts = [
+    {
+      name: "Molletes artesanos",
+      weight: "(200g – 2 unidades)",
+      price: "2,00 €",
+      image: "https://images.unsplash.com/photo-1623334044303-241021148842?q=80&w=1000&auto=format&fit=crop"
+    },
+    {
+      name: "Pan de semillas",
+      weight: "(550g)",
+      price: "4,50 €",
+      image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000&auto=format&fit=crop"
+    },
+    {
+      name: "Pan blanco artesanal",
+      weight: "(550g)",
+      price: "3,50 €",
+      image: "https://images.unsplash.com/photo-1585476644321-b976214b2f06?q=80&w=1000&auto=format&fit=crop"
+    },
+    {
+      name: "Pan de Payés",
+      weight: "(550g)",
+      price: "4,25 €",
+      image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=1000&auto=format&fit=crop"
+    },
+    {
+      name: "Pan de Centeno",
+      weight: "(500g)",
+      price: "3,80 €",
+      image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000&auto=format&fit=crop"
+    },
+    {
+      name: "Baguette Rústica",
+      weight: "(250g)",
+      price: "1,20 €",
+      image: "https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?q=80&w=1000&auto=format&fit=crop"
+    }
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="flex flex-col w-full font-sans">
+      
+      <HeroSection />
+      
+      <LogoMottoSection />
+      
+      <HistorySection />
+      
+      <CtaSection />
+      
+      <ProductSection 
+        title="Pan de Valles Centrales"
+        description="Elaborados con masa madre con fermentación de larga duración para que cada bocado honre la tradición del buen pan. Este es el secreto de un pan de excelente calidad."
+        icon="https://cdn-icons-png.flaticon.com/512/3081/3081967.png"
+        products={panesProducts}
+        viewAllLink="/productos"
+        viewAllText="Todos los panes"
+      />
+      
+      <DividerSection />
+      
+      <HowItWorksSection />
+
     </div>
   );
 }

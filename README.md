@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🥖 Panadería La Espiga (Front-end)
 
-## Getting Started
+Este es el repositorio del front-end para el sitio web de **Panadería La Espiga** (o Panciencia), desarrollado con **Next.js 15**, **React** y **Tailwind CSS**.
 
-First, run the development server:
+El proyecto está diseñado para ser rápido, modular y fácil de mantener, siguiendo las mejores prácticas de desarrollo moderno.
+
+## 🚀 Tecnologías
+
+-   **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+-   **Lenguaje**: [TypeScript](https://www.typescriptlang.org/)
+-   **Estilos**: [Tailwind CSS](https://tailwindcss.com/)
+-   **Iconos**: SVG y Flaticon (referenciados)
+-   **Fuentes**: Geist Sans / Geist Mono (Google Fonts)
+
+## 📂 Estructura del Proyecto
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+front-nextjs/
+├── app/
+│   ├── layout.tsx      # Layout global (Navbar, Footer, Fuentes)
+│   ├── page.tsx        # Página de Inicio (Landing Page)
+│   ├── globals.css     # Estilos globales y configuración de Tailwind
+│   └── cotizaciones/   # Página de formulario de cotizaciones
+│       └── page.tsx
+├── components/         # Componentes reutilizables
+│   ├── Navbar.tsx      # Barra de navegación superior
+│   ├── Footer.tsx      # Pie de página
+│   ├── HeroSection.tsx # Banner principal
+│   ├── ProductSection.tsx # Sección de cuadrícula de productos
+│   ├── HistorySection.tsx # Sección "Sobre Nosotros"
+│   └── ... (otros componentes modulares)
+├── public/             # Archivos estáticos (imágenes, favicon)
+└── ...
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Instalación y Uso
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1.  **Clonar el repositorio**:
+    ```bash
+    git clone <url-del-repositorio>
+    cd front-nextjs
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2.  **Instalar dependencias**:
+    ```bash
+    npm install
+    # o
+    yarn install
+    ```
 
-## Learn More
+3.  **Correr el servidor de desarrollo**:
+    ```bash
+    npm run dev
+    # o
+    yarn dev
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+4.  **Abrir en el navegador**:
+    Visita [http://localhost:3000](http://localhost:3000) para ver la aplicación.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎨 Personalización
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Imágenes
+Actualmente, el proyecto utiliza imágenes de **Unsplash** y **Placehold.co** como marcadores de posición.
+Para usar tus propias imágenes:
+1.  Guarda tus archivos `.jpg` o `.png` en la carpeta `public/images/`.
+2.  Actualiza las rutas en los componentes (ej. `/images/mi-foto.jpg`).
 
-## Deploy on Vercel
+### Colores
+Los colores principales están definidos con clases de Tailwind:
+-   **Ámbar/Marrón**: `text-amber-900`, `bg-amber-50`, `#E09900` (en estilos inline).
+-   **Fondo**: `bg-white`, `bg-zinc-50`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Textos
+Puedes editar los textos directamente en los archivos de componentes dentro de `components/` o en `app/page.tsx`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📦 Despliegue
+
+La forma más fácil de desplegar esta aplicación es usando [Vercel](https://vercel.com/):
+
+1.  Sube tu código a GitHub.
+2.  Importa el repositorio en Vercel.
+3.  Vercel detectará automáticamente que es un proyecto Next.js y configurará el build.
+4.  ¡Listo! Tu sitio estará online en minutos.
+
+## 📄 Licencia
+
+Este proyecto es de uso privado para Panadería La Espiga.
