@@ -82,20 +82,21 @@ export interface ProductDetail {
   sizes: SizeDetail[];
 }
 
-// --- Tipos para Órdenes ---
-export interface OrderItem {
+// --- Tipos para Órdenes (Payload de envío) ---
+export interface OrderItemPayload {
   productId: number;
   sizeId: number;
-  designId?: number;
+  designId?: number | null;
   quantity: number;
-  price: number;
 }
 
 export interface CreateOrderRequest {
   customerName: string;
-  customerPhone: string;
-  deliveryDate: string; // ISO Date
-  items: OrderItem[];
+  customerPhone?: string;
+  customerEmail?: string;
+  deliveryDate: string; // ISO 8601
+  notes?: string;
+  items: OrderItemPayload[];
 }
 
 // --- Tipos para Historial de Pedidos ---
@@ -162,7 +163,7 @@ export async function getProductDetail(id: number): Promise<ProductDetail | null
   }
 }
 
-// --- Funciones de Autenticación y Pedidos (Simuladas o Reales) ---
+// --- Funciones de Autenticación y Pedidos ---
 
 export async function sendVerificationCode(phone: string): Promise<boolean> {
   // TODO: Conectar con endpoint real POST /api/v1/auth/send-otp
@@ -177,16 +178,31 @@ export async function verifyCode(phone: string, code: string): Promise<boolean> 
 }
 
 export async function createOrder(order: CreateOrderRequest): Promise<boolean> {
-  // TODO: Conectar con endpoint real POST /api/v1/orders
-  console.log("Enviando orden:", order);
-  return new Promise(resolve => setTimeout(() => resolve(true), 1500));
+  try {
+    const res = await fetch(`${API_URL}/api/v1/orders`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(order),
+    });
+
+    if (!res.ok) {
+      console.error('Error creating order:', res.status, await res.text());
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error connecting to Orders API:', error);
+    return false;
+  }
 }
 
 export async function getOrderHistory(phone: string): Promise<OrderHistoryItem[]> {
   // TODO: Conectar con endpoint real GET /api/v1/orders/history?phone=...
   console.log(`Obteniendo historial para ${phone}...`);
   
-  // Simulación de datos
   return new Promise(resolve => setTimeout(() => resolve([
     { id: 101, date: '2023-10-25', status: 'Delivered', total: 450.00, itemsCount: 24 },
     { id: 102, date: '2023-11-02', status: 'Confirmed', total: 120.00, itemsCount: 6 },
