@@ -1,13 +1,32 @@
 import Link from 'next/link';
+import { SocialNetwork } from '../lib/api';
 
-export default function Footer() {
+interface FooterProps {
+  logo?: string;
+  description?: string;
+  backgroundImage?: string;
+  socialNetworks?: SocialNetwork[];
+}
+
+export default function Footer({ 
+  logo, 
+  description, 
+  backgroundImage, 
+  socialNetworks 
+}: FooterProps) {
+  
+  // Valores por defecto
+  const bgImage = backgroundImage || "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=2072&auto=format&fit=crop";
+  const logoSrc = logo || "https://placehold.co/200x80/transparent/ffffff?text=Logo+Panciencia";
+  const descText = description || "Abrimos nuestra panadería online para que puedas disfrutar del sabor tradicional...";
+
   return (
     <footer className="relative w-full font-sans text-gray-300 pt-[150px] pb-[50px]">
       
       {/* IMAGEN DE FONDO DEL FOOTER */}
       <div className="absolute inset-0 z-0">
           <img 
-              src="https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=2072&auto=format&fit=crop" 
+              src={bgImage} 
               alt="Fondo Footer" 
               className="w-full h-full object-cover"
           />
@@ -35,23 +54,32 @@ export default function Footer() {
             {/* LOGO CUADRADO */}
             <div className="w-32 h-32 bg-white/10 p-2 rounded-lg backdrop-blur-sm inline-flex items-center justify-center">
                 <img 
-                    src="https://placehold.co/400x400/transparent/ffffff?text=Logo+Panciencia" 
+                    src={logoSrc} 
                     alt="Logo Panciencia" 
                     className="w-full h-full object-contain opacity-90"
                 />
             </div>
             <p className="text-gray-400 leading-relaxed">
-              Abrimos nuestra panadería online para que puedas disfrutar del sabor tradicional del pan, la bollería artesanal y los productos típicos del pueblo, estés dónde estés.
+              {descText}
             </p>
             <div className="flex space-x-4">
-              {/* Facebook */}
-              <a href="#" className="w-10 h-10 border border-gray-600 rounded-full flex items-center justify-center text-gray-400 hover:bg-amber-600 hover:text-white hover:border-amber-600 transition-all">
-                <span className="font-bold">f</span>
-              </a>
-              {/* Instagram */}
-              <a href="#" className="w-10 h-10 border border-gray-600 rounded-full flex items-center justify-center text-gray-400 hover:bg-amber-600 hover:text-white hover:border-amber-600 transition-all">
-                <span className="font-bold">in</span>
-              </a>
+              {/* Redes Sociales Dinámicas */}
+              {socialNetworks && socialNetworks.map((network, index) => (
+                <a 
+                  key={index}
+                  href={network.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="w-10 h-10 border border-gray-600 rounded-full flex items-center justify-center text-gray-400 hover:bg-amber-600 hover:text-white hover:border-amber-600 transition-all"
+                  title={network.name}
+                >
+                  {/* Mapeo simple de iconos basado en el código */}
+                  {network.iconCode === 'fb' && <span className="font-bold">f</span>}
+                  {network.iconCode === 'insta' && <span className="font-bold">in</span>}
+                  {/* Fallback para otros iconos */}
+                  {network.iconCode !== 'fb' && network.iconCode !== 'insta' && <span className="text-xs">{network.name.substring(0,2)}</span>}
+                </a>
+              ))}
             </div>
           </div>
 

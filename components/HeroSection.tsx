@@ -1,9 +1,14 @@
-export default function HeroSection() {
+interface HeroSectionProps {
+  title: string;
+  backgroundImage: string;
+}
+
+export default function HeroSection({ title, backgroundImage }: HeroSectionProps) {
   return (
     <section className="relative w-full min-h-[500px] flex items-center justify-center overflow-hidden pb-[70px]">
       <div className="absolute inset-0 z-0">
           <img 
-              src="https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=2072&auto=format&fit=crop" 
+              src={backgroundImage} 
               alt="Fondo Panadería" 
               className="w-full h-full object-cover"
           />
@@ -11,7 +16,7 @@ export default function HeroSection() {
       </div>
       <div className="relative z-10 text-center px-4 mt-10">
         <h1 className="text-5xl md:text-7xl font-bold text-white drop-shadow-md tracking-wide">
-          Panadería Panciencia
+          {title}
         </h1>
       </div>
       <div 

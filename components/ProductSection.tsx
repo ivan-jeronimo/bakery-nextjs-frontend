@@ -2,8 +2,10 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import ProductModal from './ProductModal';
 
 interface Product {
+  id: number;
   name: string;
   weight: string;
   price: string;
@@ -31,8 +33,10 @@ export default function ProductSection({
 }: ProductSectionProps) {
   
   const [currentIndex, setCurrentIndex] = useState(0);
-  const itemsPerPage = 4; 
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const itemsPerPage = 4; 
   const isSliderActive = products.length > itemsPerPage;
 
   const nextSlide = () => {
@@ -54,6 +58,16 @@ export default function ProductSection({
   };
 
   const visibleProducts = getVisibleProducts();
+
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
 
   return (
     <section className={`py-12 ${bgColor}`}>
@@ -77,15 +91,12 @@ export default function ProductSection({
         </div>
 
         {/* Contenedor del Slider */}
-        {/* Añadimos px-12 o px-16 para dejar espacio a las flechas a los lados sin que tapen el contenido */}
         <div className="relative w-full max-w-7xl px-4 md:px-16">
             
             {/* Flecha Izquierda */}
             {isSliderActive && (
                 <button 
                     onClick={prevSlide}
-                    // Ajustamos top para centrar respecto a la imagen (aprox 40% de altura de la tarjeta)
-                    // left-0 para pegarlo al borde del contenedor padre (fuera del grid gracias al padding)
                     className="absolute left-0 top-[40%] -translate-y-1/2 z-10 bg-white border border-amber-900 text-amber-900 p-3 rounded-full shadow-md hover:bg-amber-900 hover:text-white transition-colors focus:outline-none"
                     aria-label="Anterior"
                 >
@@ -96,7 +107,11 @@ export default function ProductSection({
             {/* Cuadrícula de Productos */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full">
                 {visibleProducts.map((product, index) => (
-                    <div key={`${product.name}-${index}`} className="flex flex-col items-center group animate-fade-in">
+                    <div 
+                        key={`${product.name}-${index}`} 
+                        className="flex flex-col items-center group animate-fade-in cursor-pointer"
+                        onClick={() => handleProductClick(product)}
+                    >
                         <div className="relative overflow-hidden rounded-lg mb-4 w-full aspect-square">
                             <img 
                                 src={product.image} 
@@ -137,6 +152,14 @@ export default function ProductSection({
         </div>
 
       </div>
+
+      {/* Modal de Producto */}
+      <ProductModal 
+        product={selectedProduct} 
+        isOpen={isModalOpen} 
+        onClose={closeModal} 
+      />
+
     </section>
   );
 }
