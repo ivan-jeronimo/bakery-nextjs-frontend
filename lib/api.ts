@@ -82,7 +82,7 @@ export interface ProductDetail {
   sizes: SizeDetail[];
 }
 
-// --- Tipos para Órdenes (Payload de envío) ---
+// --- Tipos para Órdenes ---
 export interface OrderItemPayload {
   productId: number;
   sizeId: number;
@@ -102,14 +102,32 @@ export interface CreateOrderRequest {
 // --- Tipos para Historial de Pedidos ---
 export interface OrderHistoryItem {
   id: number;
+  orderNumber: string;
   date: string;
-  status: 'Pending' | 'Confirmed' | 'Delivered' | 'Cancelled';
+  status: string; // OrderStatus
+  paymentStatus: string; // PaymentStatus (Nuevo campo)
   total: number;
   itemsCount: number;
 }
 
+// --- Tipos de Autenticación ---
+export interface VerifyOtpResponse {
+  isValid: boolean;
+  token?: string;
+  fullName?: string;
+  message?: string;
+}
+
 // URL Base
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5044';
+
+// Helper para obtener el token almacenado
+const getAuthToken = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('auth_token');
+  }
+  return null;
+};
 
 // --- Funciones de Datos Públicos ---
 
@@ -166,24 +184,71 @@ export async function getProductDetail(id: number): Promise<ProductDetail | null
 // --- Funciones de Autenticación y Pedidos ---
 
 export async function sendVerificationCode(phone: string): Promise<boolean> {
-  // TODO: Conectar con endpoint real POST /api/v1/auth/send-otp
-  console.log(`Enviando código a ${phone}...`);
-  return new Promise(resolve => setTimeout(() => resolve(true), 1000));
+  try {
+    const res = await fetch(`${API_URL}/api/v1/auth/send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone }),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.error('Error sending OTP:', errorData);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error('Error connecting to Auth API:', error);
+    return false;
+  }
 }
 
-export async function verifyCode(phone: string, code: string): Promise<boolean> {
-  // TODO: Conectar con endpoint real POST /api/v1/auth/verify-otp
-  console.log(`Verificando código ${code} para ${phone}...`);
-  return new Promise(resolve => setTimeout(() => resolve(code === "1234"), 1000));
+export async function verifyCode(phone: string, code: string): Promise<VerifyOtpResponse> {
+  try {
+    const res = await fetch(`${API_URL}/api/v1/auth/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, code }),
+    });
+
+    if (!res.ok) {
+      console.error('Error verifying OTP:', res.status);
+      return { isValid: false };
+    }
+
+    const data: VerifyOtpResponse = await res.json();
+
+    if (data.isValid && data.token) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('auth_token', data.token);
+        if (data.fullName) {
+          localStorage.setItem('user_name', data.fullName);
+        }
+      }
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error connecting to Auth API:', error);
+    return { isValid: false };
+  }
 }
 
 export async function createOrder(order: CreateOrderRequest): Promise<boolean> {
+  const token = getAuthToken();
+  
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   try {
     const res = await fetch(`${API_URL}/api/v1/orders`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: headers,
       body: JSON.stringify(order),
     });
 
@@ -199,13 +264,24 @@ export async function createOrder(order: CreateOrderRequest): Promise<boolean> {
   }
 }
 
-export async function getOrderHistory(phone: string): Promise<OrderHistoryItem[]> {
-  // TODO: Conectar con endpoint real GET /api/v1/orders/history?phone=...
-  console.log(`Obteniendo historial para ${phone}...`);
-  
-  return new Promise(resolve => setTimeout(() => resolve([
-    { id: 101, date: '2023-10-25', status: 'Delivered', total: 450.00, itemsCount: 24 },
-    { id: 102, date: '2023-11-02', status: 'Confirmed', total: 120.00, itemsCount: 6 },
-    { id: 103, date: '2023-11-10', status: 'Pending', total: 850.00, itemsCount: 48 },
-  ]), 1000));
+export async function getOrderHistory(): Promise<OrderHistoryItem[]> {
+  const token = getAuthToken();
+  if (!token) {
+    console.error('No auth token found');
+    return [];
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/api/v1/orders/history`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!res.ok) return [];
+    return res.json();
+  } catch (error) {
+    console.error('Error fetching history:', error);
+    return [];
+  }
 }
