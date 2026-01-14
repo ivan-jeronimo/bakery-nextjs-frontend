@@ -105,9 +105,34 @@ export interface OrderHistoryItem {
   orderNumber: string;
   date: string;
   status: string; // OrderStatus
-  paymentStatus: string; // PaymentStatus (Nuevo campo)
+  paymentStatus: string; // PaymentStatus
   total: number;
   itemsCount: number;
+}
+
+// --- Tipos para Detalle de Orden Completa (Actualizado) ---
+export interface OrderDetailItem {
+  productName: string;
+  sizeName: string;
+  designName?: string;
+  weightInGrams?: number; // Nuevo campo
+  quantity: number;
+  unitPrice: number;
+  subtotal: number;
+}
+
+export interface OrderDetail {
+  id: number;
+  orderNumber: string;
+  orderDate: string;
+  deliveryDate: string;
+  status: string;
+  paymentStatus: string;
+  totalAmount: number;
+  customerName: string;
+  customerPhone: string;
+  notes?: string;
+  items: OrderDetailItem[];
 }
 
 // --- Tipos de Autenticación ---
@@ -283,5 +308,24 @@ export async function getOrderHistory(): Promise<OrderHistoryItem[]> {
   } catch (error) {
     console.error('Error fetching history:', error);
     return [];
+  }
+}
+
+export async function getOrderById(orderId: number): Promise<OrderDetail | null> {
+  const token = getAuthToken();
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${API_URL}/api/v1/orders/${orderId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!res.ok) return null;
+    return res.json();
+  } catch (error) {
+    console.error(`Error fetching order ${orderId}:`, error);
+    return null;
   }
 }

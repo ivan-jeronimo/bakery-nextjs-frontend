@@ -10,6 +10,7 @@ import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { sendVerificationCode, verifyCode, createOrder, getOrderHistory, OrderHistoryItem } from '../../lib/api';
+import OrderDetailModal from '../../components/OrderDetailModal';
 
 export default function CotizacionesPage() {
   const { cart, removeFromCart, clearCart } = useCart();
@@ -35,6 +36,10 @@ export default function CotizacionesPage() {
   // Datos Historial
   const [history, setHistory] = useState<OrderHistoryItem[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
+  
+  // Modal de Detalle de Orden
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
@@ -59,6 +64,11 @@ export default function CotizacionesPage() {
     const orders = await getOrderHistory();
     setHistory(orders);
     setLoadingHistory(false);
+  };
+
+  const handleOrderClick = (orderId: number) => {
+    setSelectedOrderId(orderId);
+    setIsDetailModalOpen(true);
   };
 
   // --- Helpers de Formato e Iconos ---
@@ -463,7 +473,11 @@ export default function CotizacionesPage() {
                       const paymentConfig = getPaymentStatusConfig(order.paymentStatus);
                       
                       return (
-                        <div key={order.id} className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow">
+                        <div 
+                          key={order.id} 
+                          className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow cursor-pointer"
+                          onClick={() => handleOrderClick(order.id)}
+                        >
                           {/* Encabezado: Número de Orden y Estado (Misma línea) */}
                           <div className="flex justify-between items-start mb-2">
                             <span className="font-bold text-gray-800 text-sm break-all mr-2">
@@ -509,6 +523,14 @@ export default function CotizacionesPage() {
 
         </div>
       )}
+
+      {/* Modal de Detalle de Orden */}
+      <OrderDetailModal 
+        orderId={selectedOrderId} 
+        isOpen={isDetailModalOpen} 
+        onClose={() => setIsDetailModalOpen(false)} 
+      />
+
     </div>
   );
 }
