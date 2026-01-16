@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faTruck, faPhone, faCreditCard, faSpinner, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import { useState, useEffect } from 'react';
-import { getProductDetail, ProductDetail, SizeDetail, DesignVariant } from '../lib/api';
+import { getProductDetail, ProductDetail, SizeDetail, DesignVariant, ProductVariant } from '../lib/api';
 import { useCart } from '../context/CartContext';
 
 interface Product {
@@ -13,6 +13,7 @@ interface Product {
   weight: string;
   price: string;
   image: string;
+  variants?: ProductVariant[]; 
 }
 
 interface ProductModalProps {
@@ -31,6 +32,8 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
   
   const [selectedSize, setSelectedSize] = useState<SizeDetail | null>(null);
   const [selectedDesign, setSelectedDesign] = useState<DesignVariant | null>(null);
+  
+  const [currentImage, setCurrentImage] = useState('');
 
   useEffect(() => {
     if (isOpen && product) {
@@ -38,14 +41,17 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
       setDetail(null);
       setQuantity(6);
       setIsAdded(false);
+      setCurrentImage(product.image);
       
       getProductDetail(product.id)
         .then(data => {
           setDetail(data);
-          if (data && data.sizes.length > 0) {
+          
+          if (data && data.sizes && data.sizes.length > 0) {
             const firstSize = data.sizes[0];
             setSelectedSize(firstSize);
-            if (firstSize.availableDesigns.length > 0) {
+            
+            if (firstSize.availableDesigns && firstSize.availableDesigns.length > 0) {
               setSelectedDesign(firstSize.availableDesigns[0]);
             }
           }
@@ -55,13 +61,34 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
   }, [isOpen, product]);
 
   useEffect(() => {
-    if (selectedSize && selectedDesign) {
-      const designExists = selectedSize.availableDesigns.find(d => d.designId === selectedDesign.designId);
-      if (!designExists && selectedSize.availableDesigns.length > 0) {
-        setSelectedDesign(selectedSize.availableDesigns[0]);
+    if (selectedSize) {
+      const designs = selectedSize.availableDesigns || [];
+      const designStillValid = selectedDesign && designs.some(d => d.designId === selectedDesign.designId);
+      
+      if (!designStillValid && designs.length > 0) {
+        setSelectedDesign(designs[0]);
+      } else if (designs.length === 0) {
+        setSelectedDesign(null);
       }
     }
   }, [selectedSize]);
+
+  useEffect(() => {
+    if (selectedSize && selectedDesign) {
+      const variantsSource = product?.variants || detail?.variants || [];
+      
+      const variant = variantsSource.find(v => 
+        v.sizeId === selectedSize.sizeId && 
+        v.designId === selectedDesign.designId
+      );
+
+      if (variant && variant.imageUrl && variant.imageUrl.trim() !== "") {
+        setCurrentImage(variant.imageUrl);
+      } else {
+        setCurrentImage(product?.image || "");
+      }
+    }
+  }, [selectedSize, selectedDesign, detail, product]);
 
   if (!isOpen || !product) return null;
 
@@ -74,23 +101,17 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
   const handleAddToCart = () => {
     if (!detail || !selectedSize) return;
 
-    console.log("Añadiendo al carrito:", {
-      size: selectedSize.sizeName,
-      weight: selectedSize.weightInGrams
-    });
-
     addToCart({
       productId: detail.id,
       productName: detail.name,
       sizeId: selectedSize.sizeId,
       sizeName: selectedSize.sizeName,
-      // Aseguramos que si weightInGrams existe, se use, si no, cadena vacía
-      weight: selectedSize.weightInGrams ? `${selectedSize.weightInGrams}g` : '',
+      weight: selectedSize.weightInGrams ? `${selectedSize.weightInGrams}g` : '', 
       designId: selectedDesign?.designId,
       designName: selectedDesign?.designName,
       price: currentPrice,
       quantity: quantity,
-      image: product.image 
+      image: currentImage 
     });
 
     setIsAdded(true);
@@ -112,13 +133,13 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
           <FontAwesomeIcon icon={faTimes} className="w-6 h-6" />
         </button>
 
-        {/* Columna Izquierda: Imagen */}
+        {/* Columna Izquierda: Imagen Dinámica */}
         <div className="w-full md:w-1/2 bg-gray-100 flex items-center justify-center p-8">
-          <div className="relative w-full aspect-square rounded-lg overflow-hidden shadow-sm">
+          <div className="relative w-full aspect-square rounded-lg overflow-hidden shadow-sm bg-white">
             <img 
-              src={product.image} 
+              src={currentImage || product.image} 
               alt={product.name} 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-opacity duration-300"
             />
           </div>
         </div>
@@ -148,7 +169,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
               </div>
 
               {/* Selector de Tamaño */}
-              {detail.sizes.length > 0 && (
+              {detail.sizes && detail.sizes.length > 0 && (
                 <div>
                   <p className="font-bold text-gray-700 mb-2 text-sm uppercase tracking-wide">Tamaño:</p>
                   <div className="flex flex-wrap gap-2">
@@ -162,7 +183,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                             : 'bg-white text-gray-600 border-gray-300 hover:border-amber-500'
                         }`}
                       >
-                        {size.sizeName} ({size.weightInGrams}g)
+                        {size.sizeName} {size.weightInGrams && `(${size.weightInGrams}g)`}
                       </button>
                     ))}
                   </div>
@@ -170,7 +191,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
               )}
 
               {/* Selector de Diseño */}
-              {selectedSize && selectedSize.availableDesigns.length > 0 && (
+              {selectedSize && selectedSize.availableDesigns && selectedSize.availableDesigns.length > 0 && (
                 <div>
                   <p className="font-bold text-gray-700 mb-2 text-sm uppercase tracking-wide">Diseño:</p>
                   <div className="flex flex-wrap gap-2">
@@ -179,7 +200,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                         key={design.variantId}
                         onClick={() => setSelectedDesign(design)}
                         className={`px-4 py-2 rounded-md border text-sm transition-all ${
-                          selectedDesign?.variantId === design.variantId
+                          selectedDesign?.designId === design.designId
                             ? 'bg-amber-100 text-amber-900 border-amber-900 font-medium'
                             : 'bg-white text-gray-600 border-gray-300 hover:border-amber-500'
                         }`}
@@ -200,7 +221,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
               {/* Precio Total */}
               <div className="flex items-end justify-between border-t border-gray-100 pt-4">
                 <div>
-                  <p className="text-sm text-gray-500">Precio unitario: ${currentPrice.toFixed(2)}</p>
+                  <p className="text-sm text-gray-500">Precio unitario: ${Number(currentPrice).toFixed(2)}</p>
                   <p className="text-3xl font-bold text-amber-900">
                     ${totalPrice.toFixed(2)}
                   </p>
@@ -261,6 +282,10 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
 
           {/* Información Adicional */}
           <div className="space-y-3 text-xs text-gray-500 pt-4 border-t border-gray-100">
+            <div className="flex items-center gap-2">
+              <FontAwesomeIcon icon={faTruck} className="w-4 h-4 text-amber-700" />
+              <span>Envíos locales disponibles.</span>
+            </div>
             <div className="flex items-center gap-2">
               <FontAwesomeIcon icon={faWhatsapp} className="w-4 h-4 text-amber-700" />
               <span>Dudas: 630 95 18 55</span>

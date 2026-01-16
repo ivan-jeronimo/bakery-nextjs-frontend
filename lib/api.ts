@@ -37,11 +37,23 @@ export interface BakeryData {
   socialNetworks: SocialNetwork[];
 }
 
-// --- Tipos para el Catálogo de Productos ---
+// --- Tipos para el Catálogo (Estructura Plana) ---
 export interface ProductSize {
   id: number;
   name: string;
   price: number | string;
+  weightInGrams?: number;
+}
+
+export interface ProductDesign {
+  id: number;
+  name: string;
+}
+
+export interface ProductVariant {
+  sizeId: number;
+  designId: number;
+  imageUrl?: string;
 }
 
 export interface CatalogProduct {
@@ -49,6 +61,8 @@ export interface CatalogProduct {
   name: string;
   description: string;
   availableSizes: ProductSize[];
+  availableDesigns: ProductDesign[];
+  variants: ProductVariant[];
 }
 
 export interface ProductDisplay {
@@ -57,9 +71,11 @@ export interface ProductDisplay {
   weight: string;
   price: string;
   image: string;
+  variants?: ProductVariant[];
 }
 
-// --- Tipos para Detalle de Producto ---
+// --- Tipos para Detalle de Producto (Estructura Anidada) ---
+// Esta es la estructura que devuelve /products/{id}/detail según tus logs
 export interface DesignVariant {
   variantId: number;
   designId: number;
@@ -80,6 +96,9 @@ export interface ProductDetail {
   name: string;
   description: string;
   sizes: SizeDetail[];
+  // Si la API de detalle NO devuelve variants en la raíz, no lo ponemos aquí.
+  // Pero si queremos usar las imágenes del catálogo, podemos inyectarlas manualmente o pasarlas como prop.
+  variants?: ProductVariant[];
 }
 
 // --- Tipos para Órdenes ---
@@ -110,12 +129,12 @@ export interface OrderHistoryItem {
   itemsCount: number;
 }
 
-// --- Tipos para Detalle de Orden Completa (Actualizado) ---
+// --- Tipos para Detalle de Orden Completa ---
 export interface OrderDetailItem {
   productName: string;
   sizeName: string;
   designName?: string;
-  weightInGrams?: number; // Nuevo campo
+  weightInGrams?: number;
   quantity: number;
   unitPrice: number;
   subtotal: number;
@@ -181,12 +200,22 @@ export async function getProductsCatalog(): Promise<ProductDisplay[]> {
       const priceDisplay = minPrice > 0 ? `$${minPrice.toFixed(2)}` : "Consultar";
       const sizeDisplay = p.availableSizes.length > 0 ? p.availableSizes[0].name : "Tradicional";
 
+      let image = "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=600&auto=format&fit=crop";
+      
+      if (p.variants && p.variants.length > 0) {
+        const variantWithImage = p.variants.find(v => v.imageUrl && v.imageUrl.trim() !== "");
+        if (variantWithImage) {
+          image = variantWithImage.imageUrl!;
+        }
+      }
+
       return {
         id: p.id,
         name: p.name,
         weight: sizeDisplay,
         price: priceDisplay,
-        image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=600&auto=format&fit=crop"
+        image: image,
+        variants: p.variants // Pasamos las variantes completas
       };
     });
   } catch (error) {
@@ -199,7 +228,8 @@ export async function getProductDetail(id: number): Promise<ProductDetail | null
   try {
     const res = await fetch(`${API_URL}/api/v1/products/${id}/detail`);
     if (!res.ok) return null;
-    return res.json();
+    const data = await res.json();
+    return data;
   } catch (error) {
     console.error(`Error connecting to Product Detail API ${id}:`, error);
     return null;

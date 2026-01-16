@@ -27,7 +27,6 @@ export default async function Home() {
   
   console.log("⚡ Iniciando petición de datos...");
   
-  // Ejecutamos ambas peticiones en paralelo para mayor velocidad
   const [bakeryData, productsCatalog] = await Promise.all([
     getBakeryData(),
     getProductsCatalog()
@@ -35,7 +34,7 @@ export default async function Home() {
   
   const data = bakeryData || fallbackData;
   
-  // Si la API de productos falla o está vacía, usamos un array vacío (o podrías poner fallback)
+  // Si la API de productos falla o está vacía, usamos un array vacío
   const products = productsCatalog.length > 0 ? productsCatalog : [];
 
   return (
@@ -70,7 +69,8 @@ export default async function Home() {
       
       <DividerSection />
       
-      <HowItWorksSection steps={data.processSteps} />
+      {/* Eliminada la prop steps que no existe en BakeryData */}
+      <HowItWorksSection />
 
     </div>
   );

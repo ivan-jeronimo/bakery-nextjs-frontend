@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import ProductModal from './ProductModal';
+import { ProductVariant } from '../lib/api'; // Importar tipo
 
 interface Product {
   id: number;
@@ -10,6 +11,7 @@ interface Product {
   weight: string;
   price: string;
   image: string;
+  variants?: ProductVariant[]; // Añadir variantes opcionales
 }
 
 interface ProductSectionProps {
@@ -69,6 +71,9 @@ export default function ProductSection({
     setSelectedProduct(null);
   };
 
+  // Imagen por defecto si viene vacía
+  const fallbackImage = "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=600&auto=format&fit=crop";
+
   return (
     <section className={`py-12 ${bgColor}`}>
       <div className="container mx-auto px-4 flex flex-col items-center text-center">
@@ -77,7 +82,7 @@ export default function ProductSection({
         <div className="max-w-3xl mx-auto mb-12">
             <div className="mb-4 flex justify-center">
                 <img 
-                    src={icon} 
+                    src={icon || fallbackImage} 
                     alt="Icono Sección" 
                     className="w-16 h-16 opacity-80"
                 />
@@ -114,7 +119,7 @@ export default function ProductSection({
                     >
                         <div className="relative overflow-hidden rounded-lg mb-4 w-full aspect-square">
                             <img 
-                                src={product.image} 
+                                src={product.image || fallbackImage}
                                 alt={product.name} 
                                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                             />
