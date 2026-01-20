@@ -37,7 +37,8 @@ export interface BakeryData {
   socialNetworks: SocialNetwork[];
 }
 
-// --- Tipos para el Catálogo (Estructura Plana) ---
+// --- Tipos para el Catálogo y Detalle de Productos ---
+
 export interface ProductSize {
   id: number;
   name: string;
@@ -65,39 +66,14 @@ export interface CatalogProduct {
   variants: ProductVariant[];
 }
 
+export type ProductDetail = CatalogProduct;
+
 export interface ProductDisplay {
   id: number;
   name: string;
   weight: string;
   price: string;
   image: string;
-  variants?: ProductVariant[];
-}
-
-// --- Tipos para Detalle de Producto (Estructura Anidada) ---
-// Esta es la estructura que devuelve /products/{id}/detail según tus logs
-export interface DesignVariant {
-  variantId: number;
-  designId: number;
-  designName: string;
-  designDescription: string;
-}
-
-export interface SizeDetail {
-  sizeId: number;
-  sizeName: string;
-  price: number;
-  weightInGrams: number;
-  availableDesigns: DesignVariant[];
-}
-
-export interface ProductDetail {
-  id: number;
-  name: string;
-  description: string;
-  sizes: SizeDetail[];
-  // Si la API de detalle NO devuelve variants en la raíz, no lo ponemos aquí.
-  // Pero si queremos usar las imágenes del catálogo, podemos inyectarlas manualmente o pasarlas como prop.
   variants?: ProductVariant[];
 }
 
@@ -162,6 +138,11 @@ export interface VerifyOtpResponse {
   message?: string;
 }
 
+// --- Tipos de Pago ---
+export interface PaymentResponse {
+  initPoint: string;
+}
+
 // URL Base
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5044';
 
@@ -215,7 +196,7 @@ export async function getProductsCatalog(): Promise<ProductDisplay[]> {
         weight: sizeDisplay,
         price: priceDisplay,
         image: image,
-        variants: p.variants // Pasamos las variantes completas
+        variants: p.variants
       };
     });
   } catch (error) {
@@ -229,6 +210,7 @@ export async function getProductDetail(id: number): Promise<ProductDetail | null
     const res = await fetch(`${API_URL}/api/v1/products/${id}/detail`);
     if (!res.ok) return null;
     const data = await res.json();
+    console.log(`📦 API Response for Product ${id}:`, data);
     return data;
   } catch (error) {
     console.error(`Error connecting to Product Detail API ${id}:`, error);
@@ -356,6 +338,37 @@ export async function getOrderById(orderId: number): Promise<OrderDetail | null>
     return res.json();
   } catch (error) {
     console.error(`Error fetching order ${orderId}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Inicia el proceso de pago con Mercado Pago.
+ * Endpoint: POST /api/v1/orders/{orderId}/pay
+ */
+export async function initiatePayment(orderId: number): Promise<string | null> {
+  const token = getAuthToken();
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${API_URL}/api/v1/orders/${orderId}/pay`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({}) // Body vacío
+    });
+
+    if (!res.ok) {
+      console.error('Error initiating payment:', res.status);
+      return null;
+    }
+
+    const data: PaymentResponse = await res.json();
+    return data.initPoint;
+  } catch (error) {
+    console.error('Error connecting to Payment API:', error);
     return null;
   }
 }

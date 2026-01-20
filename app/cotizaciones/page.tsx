@@ -17,7 +17,7 @@ export default function CotizacionesPage() {
   
   // Estados de Sesión
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState(''); // Nombre del Usuario (Perfil)
   
   // Estados de UI
   const [isLoading, setIsLoading] = useState(false);
@@ -30,8 +30,9 @@ export default function CotizacionesPage() {
   const [showOtpInput, setShowOtpInput] = useState(false);
 
   // Datos Formulario Pedido
-  const [orderName, setOrderName] = useState('');
+  const [orderName, setOrderName] = useState(''); // Nombre para la Orden (Destinatario)
   const [orderDate, setOrderDate] = useState('');
+  const [orderTime, setOrderTime] = useState('');
 
   // Datos Historial
   const [history, setHistory] = useState<OrderHistoryItem[]>([]);
@@ -43,21 +44,17 @@ export default function CotizacionesPage() {
 
   const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-  // --- Efectos ---
-
-  useEffect(() => {
-    const token = localStorage.getItem('auth_token');
-    const savedName = localStorage.getItem('user_name');
-    
-    if (token) {
-      setIsAuthenticated(true);
-      if (savedName) {
-        setUserName(savedName);
-        setOrderName(savedName);
-      }
-      loadHistory();
+  // Generar opciones de hora
+  const timeOptions = [];
+  for (let hour = 8; hour <= 20; hour++) {
+    const hourStr = hour.toString().padStart(2, '0');
+    timeOptions.push(`${hourStr}:00`);
+    if (hour < 20) {
+      timeOptions.push(`${hourStr}:30`);
     }
-  }, []);
+  }
+
+  // --- Funciones ---
 
   const loadHistory = async () => {
     setLoadingHistory(true);
@@ -65,6 +62,22 @@ export default function CotizacionesPage() {
     setHistory(orders);
     setLoadingHistory(false);
   };
+
+  // --- Efectos ---
+
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+    const savedName = localStorage.getItem('user_name'); // Este es el FullName del usuario
+    
+    if (token) {
+      setIsAuthenticated(true);
+      if (savedName) {
+        setUserName(savedName);
+        setOrderName(savedName); // Pre-llenamos el destinatario con el nombre del usuario
+      }
+      loadHistory();
+    }
+  }, []);
 
   const handleOrderClick = (orderId: number) => {
     setSelectedOrderId(orderId);
@@ -115,6 +128,8 @@ export default function CotizacionesPage() {
     setOtp('');
     setShowOtpInput(false);
     setSuccessMessage('');
+    setUserName('');
+    setOrderName('');
   };
 
   const handleRequestCode = async () => {
@@ -143,10 +158,13 @@ export default function CotizacionesPage() {
     if (response.isValid) {
       setIsAuthenticated(true);
       loadHistory();
+      
+      // Si el backend devuelve el nombre del usuario, lo guardamos y usamos
       if (response.fullName) {
         setUserName(response.fullName);
-        setOrderName(response.fullName);
+        setOrderName(response.fullName); // Pre-llenar destinatario
       } else {
+        // Si no, intentamos recuperar del localStorage
         const savedName = localStorage.getItem('user_name');
         if (savedName) {
           setUserName(savedName);
@@ -161,20 +179,20 @@ export default function CotizacionesPage() {
   // --- Manejadores de Pedido ---
 
   const handleSubmitOrder = async () => {
-    if (!orderName || !orderDate) {
-      setError('Completa nombre y fecha.');
+    if (!orderName || !orderDate || !orderTime) {
+      setError('Completa nombre, fecha y hora.');
       return;
     }
     setError('');
     setIsLoading(true);
 
-    const deliveryDateTime = new Date(`${orderDate}T10:00:00Z`).toISOString();
+    const deliveryDateTime = new Date(`${orderDate}T${orderTime}:00Z`).toISOString();
 
-    localStorage.setItem('user_name', orderName);
-    setUserName(orderName);
+    // NOTA: No actualizamos 'user_name' (perfil) aquí, porque este es el nombre del destinatario de la orden.
+    // Si quisiéramos actualizar el perfil, usaríamos otro endpoint.
 
     const success = await createOrder({
-      customerName: orderName,
+      customerName: orderName, // Enviamos el nombre específico para esta orden
       customerPhone: phone, 
       deliveryDate: deliveryDateTime,
       items: cart.map(item => ({
@@ -391,16 +409,13 @@ export default function CotizacionesPage() {
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de quien recibe</label>
                         <div className="relative">
                           <span className="absolute left-3 top-3 text-gray-400"><FontAwesomeIcon icon={faUser} /></span>
                           <input 
                             type="text" 
                             value={orderName}
-                            onChange={(e) => {
-                              setOrderName(e.target.value);
-                              setUserName(e.target.value);
-                            }}
+                            onChange={(e) => setOrderName(e.target.value)} // Solo actualiza el nombre de la orden
                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                             placeholder="Tu nombre"
                           />
@@ -417,6 +432,22 @@ export default function CotizacionesPage() {
                             onChange={(e) => setOrderDate(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                           />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Hora de Entrega</label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-3 text-gray-400"><FontAwesomeIcon icon={faClock} /></span>
+                          <select 
+                            value={orderTime}
+                            onChange={(e) => setOrderTime(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 appearance-none bg-white"
+                          >
+                            <option value="">Selecciona hora</option>
+                            {timeOptions.map((time) => (
+                              <option key={time} value={time}>{time}</option>
+                            ))}
+                          </select>
                         </div>
                       </div>
                     </div>

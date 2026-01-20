@@ -3,7 +3,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faSpinner, faCreditCard, faUser, faCalendarAlt, faStickyNote } from '@fortawesome/free-solid-svg-icons';
 import { useState, useEffect } from 'react';
-import { getOrderById, OrderDetail } from '../lib/api';
+import { getOrderById, OrderDetail, initiatePayment } from '../lib/api';
 
 interface OrderDetailModalProps {
   orderId: number | null;
@@ -14,6 +14,7 @@ interface OrderDetailModalProps {
 export default function OrderDetailModal({ orderId, isOpen, onClose }: OrderDetailModalProps) {
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(false);
+  const [paying, setPaying] = useState(false); // Estado para el botón de pago
 
   useEffect(() => {
     if (isOpen && orderId) {
@@ -31,6 +32,21 @@ export default function OrderDetailModal({ orderId, isOpen, onClose }: OrderDeta
     return new Date(isoDate).toLocaleDateString('es-MX', { 
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
     });
+  };
+
+  const handlePayment = async () => {
+    if (!order) return;
+    setPaying(true);
+    
+    const initPoint = await initiatePayment(order.id);
+    
+    if (initPoint) {
+      // Redirigir a Mercado Pago
+      window.location.href = initPoint;
+    } else {
+      alert("No se pudo iniciar el pago. Intenta de nuevo más tarde.");
+      setPaying(false);
+    }
   };
 
   const showPayButton = order?.status === 'Accepted' && order?.paymentStatus === 'Pending';
@@ -142,12 +158,25 @@ export default function OrderDetailModal({ orderId, isOpen, onClose }: OrderDeta
 
               {showPayButton && (
                 <div className="mt-6 pt-6 border-t border-gray-100">
-                  <button className="w-full bg-green-600 text-white font-bold py-4 rounded-lg hover:bg-green-700 transition-colors shadow-lg flex items-center justify-center gap-2">
-                    <FontAwesomeIcon icon={faCreditCard} />
-                    Pagar Ahora
+                  <button 
+                    onClick={handlePayment}
+                    disabled={paying}
+                    className="w-full bg-green-600 text-white font-bold py-4 rounded-lg hover:bg-green-700 transition-colors shadow-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {paying ? (
+                      <>
+                        <FontAwesomeIcon icon={faSpinner} spin />
+                        Procesando...
+                      </>
+                    ) : (
+                      <>
+                        <FontAwesomeIcon icon={faCreditCard} />
+                        Pagar con Mercado Pago
+                      </>
+                    )}
                   </button>
                   <p className="text-xs text-center text-gray-500 mt-2">
-                    Serás redirigido a nuestra pasarela de pago segura.
+                    Serás redirigido a la pasarela de pago segura de Mercado Pago.
                   </p>
                 </div>
               )}
