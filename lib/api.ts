@@ -143,6 +143,12 @@ export interface PaymentResponse {
   initPoint: string;
 }
 
+export interface PaymentSyncResponse {
+  paymentStatus: string; // 'Approved', 'InProcess', 'Rejected', etc.
+  status?: string; // Estado de la orden
+  message?: string;
+}
+
 // URL Base
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5044';
 
@@ -342,10 +348,6 @@ export async function getOrderById(orderId: number): Promise<OrderDetail | null>
   }
 }
 
-/**
- * Inicia el proceso de pago con Mercado Pago.
- * Endpoint: POST /api/v1/orders/{orderId}/pay
- */
 export async function initiatePayment(orderId: number): Promise<string | null> {
   const token = getAuthToken();
   if (!token) return null;
@@ -357,7 +359,7 @@ export async function initiatePayment(orderId: number): Promise<string | null> {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({}) // Body vacío
+      body: JSON.stringify({})
     });
 
     if (!res.ok) {
@@ -369,6 +371,35 @@ export async function initiatePayment(orderId: number): Promise<string | null> {
     return data.initPoint;
   } catch (error) {
     console.error('Error connecting to Payment API:', error);
+    return null;
+  }
+}
+
+/**
+ * Sincroniza el estado del pago usando el OrderNumber.
+ * Endpoint: POST /api/v1/payments/sync-by-number/{orderNumber}
+ */
+export async function syncPaymentStatusByNumber(orderNumber: string): Promise<PaymentSyncResponse | null> {
+  const token = getAuthToken();
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${API_URL}/api/v1/payments/sync-by-number/${orderNumber}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!res.ok) {
+      console.error('Error syncing payment:', res.status);
+      return null;
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error('Error connecting to Payment Sync API:', error);
     return null;
   }
 }
