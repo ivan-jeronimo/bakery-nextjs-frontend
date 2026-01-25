@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingBasket } from '@fortawesome/free-solid-svg-icons';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface NavbarProps {
   logo?: string;
@@ -12,8 +13,29 @@ interface NavbarProps {
 export default function Navbar({ logo }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { cartCount } = useCart();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const logoSrc = logo || "https://placehold.co/200x80/transparent/5d4037?text=Logo+Panciencia";
+
+  const handleScrollToHistory = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.preventDefault();
+    
+    // Si estamos en la home, hacemos scroll
+    if (pathname === '/') {
+      const element = document.getElementById('sobre-nosotros');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        // Opcional: Actualizar URL sin recargar
+        window.history.pushState(null, '', '/#sobre-nosotros');
+      }
+    } else {
+      // Si estamos en otra página, navegamos a la home con el hash
+      router.push('/#sobre-nosotros');
+    }
+    
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-md font-sans">
@@ -33,7 +55,15 @@ export default function Navbar({ logo }: NavbarProps) {
           {/* Desktop Menu */}
           <nav className="hidden md:flex space-x-8 items-center">
             <Link href="/" className="text-gray-700 hover:text-amber-600 font-medium transition-colors">Inicio</Link>
-            <Link href="/sobre-nosotros" className="text-gray-700 hover:text-amber-600 font-medium transition-colors">Sobre nosotros</Link>
+            
+            {/* Enlace con manejo manual de scroll */}
+            <a 
+              href="/#sobre-nosotros" 
+              onClick={handleScrollToHistory}
+              className="text-gray-700 hover:text-amber-600 font-medium transition-colors cursor-pointer"
+            >
+              Sobre nosotros
+            </a>
             
             {/* Link Cotizar con Badge */}
             <Link href="/cotizaciones" className="text-gray-700 hover:text-amber-600 font-medium transition-colors flex items-center relative group">
@@ -81,7 +111,15 @@ export default function Navbar({ logo }: NavbarProps) {
         <div className="md:hidden bg-white border-t border-gray-100 shadow-inner">
           <div className="px-4 pt-2 pb-4 space-y-1">
             <Link href="/" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-600 hover:bg-amber-50" onClick={() => setIsMobileMenuOpen(false)}>Inicio</Link>
-            <Link href="/sobre-nosotros" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-600 hover:bg-amber-50" onClick={() => setIsMobileMenuOpen(false)}>Sobre nosotros</Link>
+            
+            <a 
+              href="/#sobre-nosotros" 
+              onClick={handleScrollToHistory}
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-600 hover:bg-amber-50 cursor-pointer"
+            >
+              Sobre nosotros
+            </a>
+
             <Link href="/cotizaciones" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-600 hover:bg-amber-50 flex justify-between items-center" onClick={() => setIsMobileMenuOpen(false)}>
                 <span>Cotizar</span>
                 {cartCount > 0 && <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">{cartCount} ítems</span>}

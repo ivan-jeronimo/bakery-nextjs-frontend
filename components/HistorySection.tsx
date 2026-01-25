@@ -6,7 +6,7 @@ interface HistorySectionProps {
 
 export default function HistorySection({ title, description, image }: HistorySectionProps) {
   return (
-    <section className="pt-8 pb-20 bg-white">
+    <section id="sobre-nosotros" className="pt-8 pb-20 bg-white scroll-mt-24">
       <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center gap-16">
 
