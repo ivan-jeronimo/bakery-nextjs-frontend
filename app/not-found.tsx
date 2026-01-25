@@ -15,9 +15,9 @@ export default function NotFound() {
       <div className="mb-8 relative">
         <div className="w-64 h-64 bg-white rounded-full flex items-center justify-center shadow-xl border-4 border-amber-200 overflow-hidden">
             <img 
-                src="https://cdn-icons-png.flaticon.com/512/7479/7479896.png" 
-                alt="Pan triste" 
-                className="w-40 h-40 opacity-80 hover:scale-110 transition-transform duration-500"
+                src="https://cdn-icons-png.flaticon.com/512/5545/5545566.png" 
+                alt="Panadero"
+                className="w-40 h-40 opacity-90 hover:scale-110 transition-transform duration-500"
             />
         </div>
         <div className="absolute -bottom-2 -right-2 bg-red-500 text-white font-bold px-4 py-2 rounded-full shadow-lg transform rotate-12">
@@ -27,7 +27,7 @@ export default function NotFound() {
 
       {/* Mensaje Ingenioso */}
       <h1 className="text-4xl md:text-5xl font-serif text-amber-900 mb-4 font-bold">
-        ¡Ups! Se nos quemó el pan...
+        ¡Te agarramos con las manos en la masa!
       </h1>
       
       <p className="text-gray-600 text-lg md:text-xl max-w-md mb-8 leading-relaxed">

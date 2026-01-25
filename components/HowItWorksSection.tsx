@@ -41,7 +41,7 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
                   Haz un pedido para una fecha especial
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed">
-                  Fusionamos la tradición de los Valles Centrales de Oaxaca con recetas innovadoras, ofreciendo una experiencia de sabor auténtica en cada pieza.
+                  Conservamos la esencia de los panes tradicionales del valle y compartimos también otras recetas que enriquecen nuestra mesa.
               </p>
           </div>
 
