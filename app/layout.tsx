@@ -59,7 +59,7 @@ export default async function RootLayout({
         <CartProvider>
           <Navbar logo={bakeryData?.logo} />
           
-          <div className="flex-grow container mx-auto px-4 py-8 flex flex-col">
+          <div className="flex-grow container mx-auto px-3 sm:px-4 py-4 sm:py-8 flex flex-col">
             <main className="flex-grow w-full">
               {children}
             </main>

@@ -75,42 +75,42 @@ export default function ProductSection({
   const fallbackImage = "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=600&auto=format&fit=crop";
 
   return (
-    <section className={`py-12 ${bgColor}`}>
+    <section className={`py-8 md:py-12 ${bgColor}`}>
       <div className="container mx-auto px-4 flex flex-col items-center text-center">
         
         {/* Encabezado */}
-        <div className="max-w-3xl mx-auto mb-12">
+        <div className="max-w-3xl mx-auto mb-8 md:mb-12">
             <div className="mb-4 flex justify-center">
                 <img 
                     src={icon || fallbackImage} 
                     alt="Icono Sección" 
-                    className="w-16 h-16 opacity-80"
+                    className="w-12 h-12 md:w-16 md:h-16 opacity-80"
                 />
             </div>
-            <h2 className="text-3xl md:text-4xl font-serif text-amber-900 font-medium mb-4">
+            <h2 className="text-3xl md:text-4xl font-serif text-amber-900 font-medium mb-3 md:mb-4">
                 {title}
             </h2>
-            <p className="text-gray-600 text-lg leading-relaxed">
+            <p className="text-gray-600 text-base md:text-lg leading-relaxed">
                 {description}
             </p>
         </div>
 
         {/* Contenedor del Slider */}
-        <div className="relative w-full max-w-7xl px-4 md:px-16">
+        <div className="relative w-full max-w-7xl px-2 sm:px-4 md:px-16">
             
             {/* Flecha Izquierda */}
             {isSliderActive && (
                 <button 
                     onClick={prevSlide}
-                    className="absolute left-0 top-[40%] -translate-y-1/2 z-10 bg-white border border-amber-900 text-amber-900 p-3 rounded-full shadow-md hover:bg-amber-900 hover:text-white transition-colors focus:outline-none"
+                    className="absolute left-0 top-[40%] -translate-y-1/2 z-10 bg-white border border-amber-900 text-amber-900 p-2 md:p-3 rounded-full shadow-md hover:bg-amber-900 hover:text-white transition-colors focus:outline-none hidden md:block"
                     aria-label="Anterior"
                 >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                    <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
             )}
 
             {/* Cuadrícula de Productos */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 w-full">
                 {visibleProducts.map((product, index) => (
                     <div 
                         key={`${product.name}-${index}`} 
@@ -134,23 +134,41 @@ export default function ProductSection({
                 ))}
             </div>
 
-            {/* Flecha Derecha */}
+            {/* Controles móviles para slider (si es necesario) */}
+            {isSliderActive && (
+                <div className="flex justify-center gap-4 mt-6 md:hidden">
+                    <button 
+                        onClick={prevSlide}
+                        className="bg-white border border-amber-900 text-amber-900 p-2 rounded-full shadow-sm"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <button 
+                        onClick={nextSlide}
+                        className="bg-white border border-amber-900 text-amber-900 p-2 rounded-full shadow-sm"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+            )}
+
+            {/* Flecha Derecha (Desktop) */}
             {isSliderActive && (
                 <button 
                     onClick={nextSlide}
-                    className="absolute right-0 top-[40%] -translate-y-1/2 z-10 bg-white border border-amber-900 text-amber-900 p-3 rounded-full shadow-md hover:bg-amber-900 hover:text-white transition-colors focus:outline-none"
+                    className="absolute right-0 top-[40%] -translate-y-1/2 z-10 bg-white border border-amber-900 text-amber-900 p-2 md:p-3 rounded-full shadow-md hover:bg-amber-900 hover:text-white transition-colors focus:outline-none hidden md:block"
                     aria-label="Siguiente"
                 >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                    <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
                 </button>
             )}
         </div>
         
         {/* Botón Ver Todos */}
-        <div className="mt-12">
+        <div className="mt-8 md:mt-12">
             <Link 
                 href={viewAllLink} 
-                className="inline-block px-10 py-4 bg-amber-900 border-2 border-amber-900 text-white font-bold text-lg rounded-full hover:bg-white hover:text-amber-900 transition-colors duration-300 uppercase tracking-wider shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                className="inline-block px-8 py-3 md:px-10 md:py-4 bg-amber-900 border-2 border-amber-900 text-white font-bold text-base md:text-lg rounded-full hover:bg-white hover:text-amber-900 transition-colors duration-300 uppercase tracking-wider shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
                 {viewAllText}
             </Link>
