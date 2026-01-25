@@ -26,14 +26,15 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
   const displaySteps = steps && steps.length > 0 ? steps : defaultSteps;
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-12 md:py-20 bg-white">
       <div className="container mx-auto px-4">
           
-          <div className="text-center mb-16 max-w-3xl mx-auto">
+          {/* Encabezado Principal (Tamaño Normal) */}
+          <div className="text-center mb-12 md:mb-16 max-w-3xl mx-auto">
               <div className="mb-6 flex justify-center">
                   <img 
-                      src="https://cdn-icons-png.flaticon.com/512/2829/2829753.png" 
-                      alt="Icono Panadería" 
+                      src="https://cdn-icons-png.flaticon.com/512/2474/2474337.png" 
+                      alt="Icono Pastel Boda"
                       className="w-20 h-20 opacity-80"
                   />
               </div>
@@ -45,16 +46,17 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
               </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+          {/* Pasos (Compactos en Móvil) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 text-center">
               {displaySteps.map((step) => (
                 <div key={step.id} className="flex flex-col items-center">
-                    <div className="mb-6">
-                        <span className="text-6xl text-amber-900">{getIcon(step.iconCode)}</span>
+                    <div className="mb-2 md:mb-6">
+                        <span className="text-4xl md:text-6xl text-amber-900">{getIcon(step.iconCode)}</span>
                     </div>
-                    <h5 className="text-xl font-bold text-amber-900 mb-4 uppercase tracking-wide">
+                    <h5 className="text-lg md:text-xl font-bold text-amber-900 mb-2 md:mb-4 uppercase tracking-wide">
                         {step.title}
                     </h5>
-                    <p className="text-gray-600 leading-relaxed px-4">
+                    <p className="text-gray-600 text-sm md:text-base leading-relaxed px-2 md:px-4">
                         {step.description}
                     </p>
                 </div>
