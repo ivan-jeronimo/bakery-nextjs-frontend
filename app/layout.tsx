@@ -23,19 +23,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Panadería La Espiga - Pan Fresco y Delicioso",
-  description: "La mejor panadería de la ciudad. Ofrecemos pan artesanal, pasteles y cotizaciones para eventos.",
+  title: "Migajón Panadería - De las recetas del valle, directo a tu mesa",
+  description: "Panadería tradicional con recetas del valle. Ofrecemos pan artesanal, pasteles y cotizaciones para eventos.",
   openGraph: {
-    title: "Panadería La Espiga - Pan Fresco y Delicioso",
-    description: "La mejor panadería de la ciudad. Ofrecemos pan artesanal, pasteles y cotizaciones para eventos.",
-    url: "https://www.panaderialaespiga.com",
-    siteName: "Panadería La Espiga",
+    title: "Migajón Panadería - De las recetas del valle, directo a tu mesa",
+    description: "Panadería tradicional con recetas del valle. Ofrecemos pan artesanal, pasteles y cotizaciones para eventos.",
+    url: "https://www.migajonpanaderia.com",
+    siteName: "Migajón Panadería",
     images: [
       {
-        url: "https://www.panaderialaespiga.com/og-image.jpg",
+        url: "https://www.migajonpanaderia.com/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Panadería La Espiga",
+        alt: "Migajón Panadería",
       },
     ],
     locale: "es_ES",
@@ -69,6 +69,11 @@ export default async function RootLayout({
               description={bakeryData?.footer?.description}
               backgroundImage={bakeryData?.footer?.backgroundImage}
               socialNetworks={bakeryData?.socialNetworks}
+              address={bakeryData?.address}
+              phoneNumber={bakeryData?.phoneNumber}
+              whatsAppNumber={bakeryData?.whatsAppNumber}
+              email={bakeryData?.email}
+              openingHours={bakeryData?.openingHours}
             />
           </div>
         </CartProvider>
