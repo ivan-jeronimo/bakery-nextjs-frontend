@@ -18,9 +18,9 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
 
   // Pasos por defecto si no hay datos
   const defaultSteps = [
-    { id: 1, order: 1, title: "Solicita tu cotización", description: "Solicita una cotización de los panes que necesitas...", iconCode: "quote" },
-    { id: 2, order: 2, title: "Revisión y Confirmación", description: "Revisaremos tu pedido y nos pondremos en contacto...", iconCode: "phone" },
-    { id: 3, order: 3, title: "Pago y Seguimiento", description: "Te avisaremos para que realices el pago...", iconCode: "truck" }
+    { id: 1, order: 1, title: "Solicita tu cotización", description: "Elige tus panes favoritos de nuestro catálogo y envíanos tu solicitud de cotización fácilmente.", iconCode: "quote" },
+    { id: 2, order: 2, title: "Revisión y Confirmación", description: "Verificaremos la disponibilidad para tu fecha y te contactaremos para confirmar los detalles.", iconCode: "phone" },
+    { id: 3, order: 3, title: "Pago y Seguimiento", description: "Realiza tu pago seguro y te avisaremos cuando tu pan se esté horneando y esté listo para ti.", iconCode: "truck" }
   ];
 
   const displaySteps = steps && steps.length > 0 ? steps : defaultSteps;
@@ -41,7 +41,7 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
                   Haz un pedido para una fecha especial
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed">
-                  En Panciencia, no solo te ofrecemos productos excepcionales, sino también una conexión auténtica con nuestras raíces.
+                  Fusionamos la tradición de los Valles Centrales de Oaxaca con recetas innovadoras, ofreciendo una experiencia de sabor auténtica en cada pieza.
               </p>
           </div>
 
