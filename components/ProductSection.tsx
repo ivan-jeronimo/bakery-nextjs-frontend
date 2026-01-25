@@ -96,9 +96,9 @@ export default function ProductSection({
         </div>
 
         {/* Contenedor del Slider */}
-        <div className="relative w-full max-w-7xl px-2 sm:px-4 md:px-16">
+        <div className="relative w-full max-w-7xl px-0 sm:px-4 md:px-16">
             
-            {/* Flecha Izquierda */}
+            {/* Flecha Izquierda (Solo Desktop) */}
             {isSliderActive && (
                 <button 
                     onClick={prevSlide}
@@ -109,8 +109,30 @@ export default function ProductSection({
                 </button>
             )}
 
-            {/* Cuadrícula de Productos */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 w-full">
+            {/* VISTA MÓVIL: Carrusel Horizontal con Scroll Nativo */}
+            <div className="md:hidden flex overflow-x-auto gap-4 pb-6 px-4 snap-x snap-mandatory scrollbar-hide w-full">
+                {products.map((product, index) => (
+                    <div 
+                        key={`mobile-${product.name}-${index}`} 
+                        className="flex-shrink-0 w-[240px] snap-center flex flex-col items-center group cursor-pointer bg-white rounded-lg shadow-sm p-4 border border-gray-100"
+                        onClick={() => handleProductClick(product)}
+                    >
+                        <div className="relative overflow-hidden rounded-lg mb-4 w-full aspect-square">
+                            <img 
+                                src={product.image || fallbackImage}
+                                alt={product.name} 
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-800 mb-1">{product.name}</h3>
+                        <p className="text-gray-500 text-sm mb-2">{product.weight}</p>
+                        <span className="text-amber-900 font-bold text-xl">{product.price}</span>
+                    </div>
+                ))}
+            </div>
+
+            {/* VISTA DESKTOP: Grid con Paginación */}
+            <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 w-full">
                 {visibleProducts.map((product, index) => (
                     <div 
                         key={`${product.name}-${index}`} 
@@ -134,25 +156,7 @@ export default function ProductSection({
                 ))}
             </div>
 
-            {/* Controles móviles para slider (si es necesario) */}
-            {isSliderActive && (
-                <div className="flex justify-center gap-4 mt-6 md:hidden">
-                    <button 
-                        onClick={prevSlide}
-                        className="bg-white border border-amber-900 text-amber-900 p-2 rounded-full shadow-sm"
-                    >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
-                    </button>
-                    <button 
-                        onClick={nextSlide}
-                        className="bg-white border border-amber-900 text-amber-900 p-2 rounded-full shadow-sm"
-                    >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                    </button>
-                </div>
-            )}
-
-            {/* Flecha Derecha (Desktop) */}
+            {/* Flecha Derecha (Solo Desktop) */}
             {isSliderActive && (
                 <button 
                     onClick={nextSlide}
@@ -164,15 +168,7 @@ export default function ProductSection({
             )}
         </div>
         
-        {/* Botón Ver Todos */}
-        <div className="mt-8 md:mt-12">
-            <Link 
-                href={viewAllLink} 
-                className="inline-block px-8 py-3 md:px-10 md:py-4 bg-amber-900 border-2 border-amber-900 text-white font-bold text-base md:text-lg rounded-full hover:bg-white hover:text-amber-900 transition-colors duration-300 uppercase tracking-wider shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-            >
-                {viewAllText}
-            </Link>
-        </div>
+        {/* Botón Ver Todos - ELIMINADO */}
 
       </div>
 

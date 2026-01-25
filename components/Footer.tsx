@@ -2,6 +2,9 @@
 import Link from 'next/link';
 import { SocialNetwork } from '../lib/api';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 interface FooterProps {
   logo?: string;
@@ -27,6 +30,7 @@ export default function Footer({
   openingHours
 }: FooterProps) {
   const router = useRouter();
+  const [openSection, setOpenSection] = useState<string | null>(null);
   
   // Valores por defecto
   const bgImage = backgroundImage || "https://static.vecteezy.com/system/resources/previews/013/769/343/large_2x/assortment-of-baked-bread-on-wooden-table-background-banner-for-advertising-and-design-promo-top-view-with-copy-space-photo.jpg";
@@ -75,6 +79,13 @@ export default function Footer({
     window.open(`https://api.whatsapp.com/send/?phone=${whatsAppText}&text=${message}`, '_blank');
   };
 
+  const toggleSection = (section: string) => {
+    // Solo permitir toggle en móvil
+    if (window.innerWidth < 768) {
+      setOpenSection(openSection === section ? null : section);
+    }
+  };
+
   return (
     <footer id="contacto" className="relative w-full font-sans text-gray-300 pt-[100px] md:pt-[150px] pb-[50px] scroll-mt-24">
       
@@ -106,6 +117,10 @@ export default function Footer({
           footer#contacto .absolute.top-0 {
             height: 70px !important;
             background-size: 100% 70px !important;
+          }
+          /* Forzar ocultar iconos en desktop si Tailwind falla */
+          .desktop-hidden-icon {
+            display: none !important;
           }
         }
       `}</style>
@@ -147,8 +162,19 @@ export default function Footer({
 
           {/* Columna 2: Enlaces (Opciones del Navbar) */}
           <div className="md:col-span-3">
-            <h3 className="text-white text-lg font-bold mb-4 md:mb-6 font-serif">Explorar</h3>
-            <ul className="space-y-3 text-sm md:text-base">
+            <div 
+              className="flex justify-between items-center cursor-pointer md:cursor-default"
+              onClick={() => toggleSection('explorar')}
+            >
+              <h3 className="text-white text-lg font-bold mb-2 md:mb-6 font-serif">Explorar</h3>
+              <span className="md:hidden desktop-hidden-icon">
+                <FontAwesomeIcon 
+                  icon={openSection === 'explorar' ? faChevronUp : faChevronDown} 
+                  className="text-amber-500 w-4 h-4"
+                />
+              </span>
+            </div>
+            <ul className={`space-y-3 text-sm md:text-base overflow-hidden transition-all duration-300 ${openSection === 'explorar' ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0 md:max-h-full md:opacity-100'}`}>
               <li><Link href="/" className="hover:text-amber-500 transition-colors">Inicio</Link></li>
               <li>
                 <a 
@@ -165,13 +191,30 @@ export default function Footer({
 
           {/* Columna 3: Información de Contacto */}
           <div className="md:col-span-4">
-            <h3 
-              className="text-white text-lg font-bold mb-4 md:mb-6 font-serif cursor-pointer hover:text-amber-500 transition-colors"
-              onClick={handleWhatsAppClick}
+            <div 
+              className="flex justify-between items-center cursor-pointer md:cursor-default"
+              onClick={() => toggleSection('contacto')}
             >
-              Contacto
-            </h3>
-            <ul className="space-y-4 text-gray-400 text-sm md:text-base">
+              <h3 
+                className="text-white text-lg font-bold mb-2 md:mb-6 font-serif hover:text-amber-500 transition-colors"
+                onClick={(e) => {
+                  // En desktop, el click en el título abre WhatsApp. En móvil, abre el acordeón.
+                  if (window.innerWidth >= 768) {
+                    e.stopPropagation();
+                    handleWhatsAppClick();
+                  }
+                }}
+              >
+                Contacto
+              </h3>
+              <span className="md:hidden desktop-hidden-icon">
+                <FontAwesomeIcon 
+                  icon={openSection === 'contacto' ? faChevronUp : faChevronDown} 
+                  className="text-amber-500 w-4 h-4"
+                />
+              </span>
+            </div>
+            <ul className={`space-y-4 text-gray-400 text-sm md:text-base overflow-hidden transition-all duration-300 ${openSection === 'contacto' ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0 md:max-h-full md:opacity-100'}`}>
               <li className="flex items-center">
                 <span className="mr-3 text-amber-500">📞</span>
                 <span>{phoneText}</span>

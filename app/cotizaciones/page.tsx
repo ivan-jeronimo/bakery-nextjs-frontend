@@ -223,11 +223,11 @@ export default function CotizacionesPage() {
   // --- RENDERIZADO ---
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-5xl">
+    <div className="container mx-auto px-4 py-8 md:py-12 max-w-5xl">
       
       {/* Header */}
-      <div className="flex justify-between items-center mb-8 border-b border-gray-100 pb-4">
-        <h1 className="text-3xl font-serif text-amber-900">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-8 border-b border-gray-100 pb-4 gap-4">
+        <h1 className="text-2xl md:text-3xl font-serif text-amber-900 text-center md:text-left">
           {isAuthenticated ? (userName ? `Hola, ${userName}` : 'Bienvenido') : 'Cotización'}
         </h1>
         {isAuthenticated && (
@@ -250,30 +250,30 @@ export default function CotizacionesPage() {
 
       {/* --- CASO ESPECIAL: CARRITO VACÍO Y NO AUTENTICADO --- */}
       {cart.length === 0 && !isAuthenticated ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center max-w-4xl mx-auto">
           
           {/* Opción 1: Ir al Catálogo */}
-          <div className="text-center p-8 bg-amber-50 rounded-xl border border-amber-100 h-full flex flex-col justify-center">
-            <div className="w-20 h-20 bg-white text-amber-900 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-                <FontAwesomeIcon icon={faShoppingBasket} className="w-10 h-10" />
+          <div className="text-center p-6 md:p-8 bg-amber-50 rounded-xl border border-amber-100 h-full flex flex-col justify-center">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white text-amber-900 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6 shadow-sm">
+                <FontAwesomeIcon icon={faShoppingBasket} className="w-8 h-8 md:w-10 md:h-10" />
             </div>
-            <h2 className="text-2xl font-serif text-amber-900 mb-4">Empieza tu pedido</h2>
-            <p className="text-gray-600 mb-8">Explora nuestro catálogo de panes tradicionales y añade tus favoritos.</p>
+            <h2 className="text-xl md:text-2xl font-serif text-amber-900 mb-3 md:mb-4">Empieza tu pedido</h2>
+            <p className="text-gray-600 mb-6 md:mb-8 text-sm md:text-base">Explora nuestro catálogo de panes tradicionales y añade tus favoritos.</p>
             <Link 
               href="/" 
-              className="inline-block px-8 py-3 bg-amber-900 text-white font-bold rounded-full hover:bg-amber-800 transition-colors shadow-md"
+              className="inline-block px-6 py-2 md:px-8 md:py-3 bg-amber-900 text-white font-bold rounded-full hover:bg-amber-800 transition-colors shadow-md text-sm md:text-base"
             >
               Ir al Catálogo
             </Link>
           </div>
 
           {/* Opción 2: Iniciar Sesión (Historial) */}
-          <div className="text-center p-8 bg-white rounded-xl border border-gray-200 shadow-sm h-full flex flex-col justify-center">
-            <div className="w-20 h-20 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                <FontAwesomeIcon icon={faHistory} className="w-10 h-10" />
+          <div className="text-center p-6 md:p-8 bg-white rounded-xl border border-gray-200 shadow-sm h-full flex flex-col justify-center">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+                <FontAwesomeIcon icon={faHistory} className="w-8 h-8 md:w-10 md:h-10" />
             </div>
-            <h2 className="text-2xl font-serif text-gray-800 mb-4">¿Ya tienes pedidos?</h2>
-            <p className="text-gray-600 mb-6">Ingresa tu número para ver el estado de tus pedidos anteriores.</p>
+            <h2 className="text-xl md:text-2xl font-serif text-gray-800 mb-3 md:mb-4">¿Ya tienes pedidos?</h2>
+            <p className="text-gray-600 mb-6 text-sm md:text-base">Ingresa tu número para ver el estado de tus pedidos anteriores.</p>
             
             {!showOtpInput ? (
               <div className="flex flex-col gap-3 max-w-xs mx-auto w-full">
@@ -285,7 +285,7 @@ export default function CotizacionesPage() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg text-center"
                   maxLength={10}
                 />
-                <button onClick={handleRequestCode} disabled={isLoading} className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 disabled:opacity-50">
+                <button onClick={handleRequestCode} disabled={isLoading} className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 disabled:opacity-50 text-sm md:text-base">
                   {isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : 'Ver mis pedidos'}
                 </button>
               </div>
@@ -300,7 +300,7 @@ export default function CotizacionesPage() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg text-center tracking-widest font-bold"
                   maxLength={6}
                 />
-                <button onClick={handleVerifyCode} disabled={isLoading} className="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50">
+                <button onClick={handleVerifyCode} disabled={isLoading} className="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm md:text-base">
                   {isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : 'Verificar'}
                 </button>
                 <button onClick={() => setShowOtpInput(false)} className="text-xs text-gray-500 underline">Cambiar número</button>
@@ -315,12 +315,12 @@ export default function CotizacionesPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* COLUMNA IZQUIERDA: Carrito y Formulario */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-8 order-2 lg:order-1">
             
             {/* 1. Resumen del Carrito */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="p-6 bg-amber-50 border-b border-amber-100 flex justify-between items-center">
-                <h2 className="text-xl font-bold text-amber-900 flex items-center gap-2">
+              <div className="p-4 md:p-6 bg-amber-50 border-b border-amber-100 flex justify-between items-center">
+                <h2 className="text-lg md:text-xl font-bold text-amber-900 flex items-center gap-2">
                   <FontAwesomeIcon icon={faShoppingBasket} /> Tu Pedido Actual
                 </h2>
                 {cart.length > 0 && (
@@ -329,7 +329,7 @@ export default function CotizacionesPage() {
               </div>
 
               {cart.length === 0 ? (
-                <div className="p-12 text-center">
+                <div className="p-8 md:p-12 text-center">
                   <p className="text-gray-500 mb-6">No tienes productos en tu cotización.</p>
                   <Link href="/" className="inline-block px-6 py-2 bg-amber-900 text-white rounded-full hover:bg-amber-800 transition-colors text-sm font-bold">
                     Ir al Catálogo
@@ -338,27 +338,42 @@ export default function CotizacionesPage() {
               ) : (
                 <div className="divide-y divide-gray-100">
                   {cart.map((item, index) => (
-                    <div key={index} className="p-4 flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-md overflow-hidden border border-gray-200 flex-shrink-0">
+                    <div key={index} className="p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                      {/* Imagen */}
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-md overflow-hidden border border-gray-200 flex-shrink-0 self-start sm:self-center">
                         <img src={item.image} alt={item.productName} className="w-full h-full object-cover" />
                       </div>
-                      <div className="flex-grow">
-                        <h3 className="font-bold text-gray-800">{item.productName}</h3>
-                        <p className="text-xs text-gray-500">{item.sizeName} {item.weight && `(${item.weight})`}</p>
-                        {item.designName && <p className="text-xs text-gray-400">{item.designName}</p>}
+                      
+                      {/* Info Principal */}
+                      <div className="flex-grow w-full sm:w-auto">
+                        <div className="flex justify-between items-start mb-1">
+                          <h3 className="font-bold text-gray-800 text-base sm:text-lg line-clamp-2">{item.productName}</h3>
+                          <button onClick={() => removeFromCart(item.productId, item.sizeId, item.designId)} className="text-red-400 hover:text-red-600 p-1 sm:hidden">
+                            <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
+                          </button>
+                        </div>
+                        
+                        <p className="text-sm text-gray-500 mb-2">{item.sizeName} {item.weight && `(${item.weight})`}</p>
+                        {item.designName && <p className="text-xs text-gray-400 mb-2">{item.designName}</p>}
+                        
+                        {/* Precios y Controles (Fila inferior en móvil) */}
+                        <div className="flex justify-between items-center mt-2 sm:mt-0">
+                          <div className="text-sm text-gray-600">
+                            <span className="font-medium">{item.quantity}</span> x ${item.price.toFixed(2)}
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <span className="font-bold text-amber-900 text-base sm:text-lg">${(item.price * item.quantity).toFixed(2)}</span>
+                            <button onClick={() => removeFromCart(item.productId, item.sizeId, item.designId)} className="text-red-400 hover:text-red-600 p-2 hidden sm:block">
+                              <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-bold text-amber-900">${(item.price * item.quantity).toFixed(2)}</p>
-                        <p className="text-xs text-gray-500">{item.quantity} x ${item.price.toFixed(2)}</p>
-                      </div>
-                      <button onClick={() => removeFromCart(item.productId, item.sizeId, item.designId)} className="text-red-400 hover:text-red-600 p-2">
-                        <FontAwesomeIcon icon={faTrash} />
-                      </button>
                     </div>
                   ))}
                   <div className="p-4 bg-gray-50 flex justify-between items-center">
-                    <span className="font-bold text-gray-600">Total Estimado</span>
-                    <span className="text-2xl font-bold text-amber-900">${totalAmount.toFixed(2)}</span>
+                    <span className="font-bold text-gray-600 text-sm md:text-base">Total Estimado</span>
+                    <span className="text-xl md:text-2xl font-bold text-amber-900">${totalAmount.toFixed(2)}</span>
                   </div>
                 </div>
               )}
@@ -366,38 +381,38 @@ export default function CotizacionesPage() {
 
             {/* 2. Formulario de Envío (Solo si hay carrito) */}
             {cart.length > 0 && (
-              <div className="bg-white rounded-xl shadow-lg border-t-4 border-green-500 p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-6">Finalizar Cotización</h2>
+              <div className="bg-white rounded-xl shadow-lg border-t-4 border-green-500 p-4 md:p-6">
+                <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">Finalizar Cotización</h2>
                 
                 {!isAuthenticated ? (
                   // Login para No Autenticados (Integrado)
                   <div className="text-center py-4">
-                    <p className="text-gray-600 mb-4">Para enviar tu pedido, necesitamos verificar tu número.</p>
+                    <p className="text-gray-600 mb-4 text-sm md:text-base">Para enviar tu pedido, necesitamos verificar tu número.</p>
                     {!showOtpInput ? (
-                      <div className="flex gap-2 max-w-sm mx-auto">
+                      <div className="flex flex-col sm:flex-row gap-2 max-w-sm mx-auto">
                         <input 
                           type="tel" 
                           placeholder="Tu número (10 dígitos)" 
                           value={phone}
                           onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
-                          className="flex-grow px-4 py-2 border rounded-lg"
+                          className="flex-grow px-4 py-2 border rounded-lg w-full"
                           maxLength={10}
                         />
-                        <button onClick={handleRequestCode} disabled={isLoading} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50">
+                        <button onClick={handleRequestCode} disabled={isLoading} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 w-full sm:w-auto text-sm md:text-base">
                           {isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : 'Enviar Código'}
                         </button>
                       </div>
                     ) : (
-                      <div className="flex gap-2 max-w-sm mx-auto">
+                      <div className="flex flex-col sm:flex-row gap-2 max-w-sm mx-auto">
                         <input 
                           type="text" 
                           placeholder="Código (6 dígitos)" 
                           value={otp}
                           onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                          className="flex-grow px-4 py-2 border rounded-lg text-center tracking-widest"
+                          className="flex-grow px-4 py-2 border rounded-lg text-center tracking-widest w-full"
                           maxLength={6}
                         />
-                        <button onClick={handleVerifyCode} disabled={isLoading} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50">
+                        <button onClick={handleVerifyCode} disabled={isLoading} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 w-full sm:w-auto text-sm md:text-base">
                           {isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : 'Verificar'}
                         </button>
                       </div>
@@ -408,7 +423,7 @@ export default function CotizacionesPage() {
                   // Formulario para Autenticados
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
+                      <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de quien recibe</label>
                         <div className="relative">
                           <span className="absolute left-3 top-3 text-gray-400"><FontAwesomeIcon icon={faUser} /></span>
@@ -455,7 +470,7 @@ export default function CotizacionesPage() {
                     <button 
                       onClick={handleSubmitOrder}
                       disabled={isLoading}
-                      className="w-full mt-4 px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors shadow-md flex items-center justify-center gap-2"
+                      className="w-full mt-4 px-6 py-2 md:py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors shadow-md flex items-center justify-center gap-2 text-sm md:text-base"
                     >
                       {isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : (
                         <>
@@ -472,15 +487,15 @@ export default function CotizacionesPage() {
           </div>
 
           {/* COLUMNA DERECHA: Historial (Ocupa 1/3) */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 order-1 lg:order-2 mb-8 lg:mb-0">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 h-full">
-              <div className="p-6 border-b border-gray-100 bg-gray-50">
+              <div className="p-4 md:p-6 border-b border-gray-100 bg-gray-50">
                 <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
                   <FontAwesomeIcon icon={faHistory} className="text-gray-400" /> Historial
                 </h2>
               </div>
               
-              <div className="p-4">
+              <div className="p-3 md:p-4">
                 {!isAuthenticated ? (
                   <div className="text-center py-8 text-gray-500 text-sm">
                     <p className="mb-4">Inicia sesión para ver tus pedidos anteriores.</p>
@@ -498,7 +513,7 @@ export default function CotizacionesPage() {
                     No tienes pedidos registrados.
                   </div>
                 ) : (
-                  <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                  <div className="space-y-3 max-h-[300px] lg:max-h-[500px] overflow-y-auto pr-1">
                     {history.map((order) => {
                       const statusConfig = getStatusConfig(order.status);
                       const paymentConfig = getPaymentStatusConfig(order.paymentStatus);

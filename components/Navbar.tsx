@@ -86,7 +86,7 @@ export default function Navbar({ logo }: NavbarProps) {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-4">
-            {/* Carrito Móvil */}
+            {/* Carrito Móvil (Icono en la barra superior) */}
             <Link href="/cotizaciones" className="relative mr-2">
                 <FontAwesomeIcon icon={faShoppingBasket} className="w-6 h-6 text-amber-900" />
                 {cartCount > 0 && (
@@ -121,10 +121,9 @@ export default function Navbar({ logo }: NavbarProps) {
             >
               Sobre nosotros
             </a>
-            <Link href="/cotizaciones" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-600 hover:bg-amber-50 flex justify-between items-center" onClick={() => setIsMobileMenuOpen(false)}>
-                <span>Cotizar</span>
-                {cartCount > 0 && <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">{cartCount} ítems</span>}
-            </Link>
+            
+            {/* Link Cotizar eliminado del menú desplegable porque ya está en la barra superior */}
+
             <a 
               href="/#contacto" 
               onClick={(e) => handleScrollToSection(e, 'contacto')}

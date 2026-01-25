@@ -4,8 +4,9 @@ export default function DividerSection() {
       className="w-full"
       style={{
           backgroundColor: '#E09900',
-          paddingTop: '54px',
-          paddingBottom: '54px'
+          height: '20px',
+          marginTop: '20px',
+          marginBottom: '20px'
       }}
     ></div>
   );
