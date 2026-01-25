@@ -117,16 +117,20 @@ export default function ProductSection({
                         className="flex-shrink-0 w-[240px] snap-center flex flex-col items-center group cursor-pointer bg-white rounded-lg shadow-sm p-4 border border-gray-100"
                         onClick={() => handleProductClick(product)}
                     >
-                        <div className="relative overflow-hidden rounded-lg mb-4 w-full aspect-square">
+                        <div className="relative overflow-hidden rounded-lg mb-3 w-full aspect-square">
                             <img 
                                 src={product.image || fallbackImage}
                                 alt={product.name} 
                                 className="w-full h-full object-cover"
                             />
                         </div>
-                        <h3 className="text-lg font-bold text-gray-800 mb-1">{product.name}</h3>
-                        <p className="text-gray-500 text-sm mb-2">{product.weight}</p>
-                        <span className="text-amber-900 font-bold text-xl">{product.price}</span>
+                        <div className="w-full text-left">
+                            <h3 className="text-lg font-bold text-gray-800 mb-0 leading-tight truncate">{product.name}</h3>
+                            <div className="flex justify-between items-center">
+                                <p className="text-gray-500 text-sm">{product.weight}</p>
+                                <span className="text-amber-900 font-bold text-lg">{product.price}</span>
+                            </div>
+                        </div>
                     </div>
                 ))}
             </div>
