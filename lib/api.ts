@@ -49,6 +49,7 @@ export interface ProductSize {
 export interface ProductDesign {
   id: number;
   name: string;
+  description?: string;
 }
 
 export interface ProductVariant {
@@ -152,6 +153,11 @@ export interface PaymentSyncResponse {
 // URL Base
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5044';
 
+// Log para depuración en producción
+if (typeof window !== 'undefined') {
+  console.log('🚀 API URL Configurada:', API_URL);
+}
+
 // Helper para obtener el token almacenado
 const getAuthToken = () => {
   if (typeof window !== 'undefined') {
@@ -164,11 +170,15 @@ const getAuthToken = () => {
 
 export async function getBakeryData(): Promise<BakeryData | null> {
   try {
+    console.log(`📡 Fetching Bakery Data from: ${API_URL}/api/v1/bakery/info`);
     const res = await fetch(`${API_URL}/api/v1/bakery/info`, { next: { revalidate: 0 } });
-    if (!res.ok) return null;
+    if (!res.ok) {
+        console.error(`❌ Error fetching bakery data: ${res.status} ${res.statusText}`);
+        return null;
+    }
     return res.json();
   } catch (error) {
-    console.error('Error connecting to API:', error);
+    console.error('❌ Network Error connecting to API:', error);
     return null;
   }
 }

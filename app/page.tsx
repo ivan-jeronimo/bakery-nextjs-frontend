@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import HeroSection from "../components/HeroSection";
 import LogoMottoSection from "../components/LogoMottoSection";
 import HistorySection from "../components/HistorySection";
@@ -5,58 +8,76 @@ import CtaSection from "../components/CtaSection";
 import ProductSection from "../components/ProductSection";
 import DividerSection from "../components/DividerSection";
 import HowItWorksSection from "../components/HowItWorksSection";
-import { getBakeryData, getProductsCatalog } from "../lib/api";
+import ErrorState from "../components/ErrorState";
+import { getBakeryData, getProductsCatalog, BakeryData, ProductDisplay } from "../lib/api";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-// Datos de respaldo
-const fallbackData = {
-  name: "Panadería Panciencia",
-  slogan: "El buen pan se hace con amor y panciencia",
-  logo: "https://placehold.co/400x400/transparent/5d4037?text=Logo+Panciencia",
-  whatsAppNumber: "34630951855",
-  hero: {
-    title: "Panadería Panciencia",
-    backgroundImage: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=2072&auto=format&fit=crop"
-  },
-  history: {
-    description: "Panciencia nació en 2021 en Segura de la Sierra...",
-    image: "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?q=80&w=1000&auto=format&fit=crop"
+export default function Home() {
+  const [bakeryData, setBakeryData] = useState<BakeryData | null>(null);
+  const [products, setProducts] = useState<ProductDisplay[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        console.log("⚡ Iniciando petición de datos en el cliente...");
+        const [data, catalog] = await Promise.all([
+          getBakeryData(),
+          getProductsCatalog()
+        ]);
+
+        if (data) {
+          setBakeryData(data);
+          setProducts(catalog);
+        } else {
+          setError(true);
+        }
+      } catch (e) {
+        console.error("Error fetching data:", e);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-amber-50">
+        <FontAwesomeIcon icon={faSpinner} spin className="text-amber-900 text-4xl mb-4" />
+        <p className="text-amber-900 font-serif animate-pulse">Horneando el sitio web...</p>
+      </div>
+    );
   }
-};
 
-export default async function Home() {
-  
-  console.log("⚡ Iniciando petición de datos...");
-  
-  const [bakeryData, productsCatalog] = await Promise.all([
-    getBakeryData(),
-    getProductsCatalog()
-  ]);
-  
-  const data = bakeryData || fallbackData;
-  
-  // Si la API de productos falla o está vacía, usamos un array vacío
-  const products = productsCatalog.length > 0 ? productsCatalog : [];
+  if (error || !bakeryData) {
+    return <ErrorState />;
+  }
 
   return (
-    <div className="flex flex-col w-full font-sans">
+    <div className="flex flex-col w-full font-sans animate-fade-in">
       
       <HeroSection 
-        title={data.name}
-        backgroundImage={data.hero?.backgroundImage || fallbackData.hero.backgroundImage} 
+        title={bakeryData.name}
+        backgroundImage={bakeryData.hero?.backgroundImage} 
       />
       
       <LogoMottoSection 
-        logo={data.logo} 
-        motto={data.slogan} 
+        logo={bakeryData.logo} 
+        motto={bakeryData.slogan} 
       />
       
       <HistorySection 
-        title={data.name}
-        description={data.history?.description || fallbackData.history.description}
-        image={data.history?.image || fallbackData.history.image}
+        title={bakeryData.name}
+        description={bakeryData.history?.description}
+        image={bakeryData.history?.image}
       />
       
-      <CtaSection whatsapp={data.whatsAppNumber} />
+      <CtaSection whatsapp={bakeryData.whatsAppNumber} />
       
       <ProductSection 
         title="Pan de Valles Centrales"
@@ -69,7 +90,6 @@ export default async function Home() {
       
       <DividerSection />
       
-      {/* Eliminada la prop steps que no existe en BakeryData */}
       <HowItWorksSection />
 
     </div>

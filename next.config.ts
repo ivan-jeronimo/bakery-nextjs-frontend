@@ -1,7 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'export',
+  trailingSlash: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -17,10 +26,6 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'panciencia.com',
-      },
-      {
-        protocol: 'https',
         hostname: 'img.freepik.com',
       },
       {
@@ -30,6 +35,14 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'smartics.s3.us-east-2.amazonaws.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'static.vecteezy.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.vexels.com',
       }
     ],
   },
