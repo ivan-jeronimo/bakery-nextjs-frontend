@@ -28,6 +28,7 @@ function CheckoutSuccessContent() {
         })
         .catch(() => setStatus('error'));
     } else {
+      // Si no hay params, no hacemos nada o mostramos error, pero no rompemos
       setStatus('error'); 
     }
   }, [orderNumberParam]);
