@@ -1,21 +1,31 @@
 "use client";
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingBasket } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/navigation';
+import { getBakeryData } from '../lib/api';
 
 interface NavbarProps {
   logo?: string;
 }
 
-export default function Navbar({ logo }: NavbarProps) {
+export default function Navbar({ logo: initialLogo }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { cartCount } = useCart();
   const router = useRouter();
+  const [logoSrc, setLogoSrc] = useState<string | undefined>(initialLogo);
 
-  const logoSrc = logo || "https://placehold.co/200x80/transparent/5d4037?text=Logo+Panciencia";
+  useEffect(() => {
+    if (!initialLogo) {
+      getBakeryData().then(data => {
+        if (data?.logo) {
+          setLogoSrc(data.logo);
+        }
+      });
+    }
+  }, [initialLogo]);
 
   const handleScrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
     e.preventDefault();
@@ -43,11 +53,15 @@ export default function Navbar({ logo }: NavbarProps) {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/">
-              <img 
-                src={logoSrc} 
-                alt="Logo Panadería" 
-                className="h-20 w-auto object-contain" 
-              />
+              {logoSrc ? (
+                <img 
+                  src={logoSrc} 
+                  alt="Logo Panadería" 
+                  className="h-20 w-auto object-contain" 
+                />
+              ) : (
+                <span className="text-2xl font-serif font-bold text-amber-900">Panadería</span>
+              )}
             </Link>
           </div>
 

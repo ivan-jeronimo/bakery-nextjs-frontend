@@ -3,8 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { getBakeryData } from "../lib/api";
-import { CartProvider } from "../context/CartContext"; // Importar Provider
+import { CartProvider } from "../context/CartContext"; 
 
 // --- Configuración Font Awesome ---
 import { config } from '@fortawesome/fontawesome-svg-core';
@@ -43,13 +42,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   
-  const bakeryData = await getBakeryData();
+  // En exportación estática, no cargamos datos en el servidor para evitar fallos de build.
+  // Los componentes Navbar y Footer se encargarán de cargar sus datos en el cliente si es necesario,
+  // o recibirán datos nulos inicialmente.
 
   return (
     <html lang="es">
@@ -57,24 +58,14 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-amber-50 text-gray-800 flex flex-col min-h-screen`}
       >
         <CartProvider>
-          <Navbar logo={bakeryData?.logo} />
+          <Navbar />
           
           <div className="flex-grow container mx-auto px-3 sm:px-4 py-4 sm:py-8 flex flex-col">
             <main className="flex-grow w-full">
               {children}
             </main>
             
-            <Footer 
-              logo={bakeryData?.logo}
-              description={bakeryData?.footer?.description}
-              backgroundImage={bakeryData?.footer?.backgroundImage}
-              socialNetworks={bakeryData?.socialNetworks}
-              address={bakeryData?.address}
-              phoneNumber={bakeryData?.phoneNumber}
-              whatsAppNumber={bakeryData?.whatsAppNumber}
-              email={bakeryData?.email}
-              openingHours={bakeryData?.openingHours}
-            />
+            <Footer />
           </div>
         </CartProvider>
       </body>
