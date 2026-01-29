@@ -1,6 +1,6 @@
-# 🥖 Panadería La Espiga (Front-end)
+# 🥖 Panadería (Front-end)
 
-Este es el repositorio del front-end para el sitio web de **Panadería La Espiga** (o Panciencia), desarrollado con **Next.js 15**, **React** y **Tailwind CSS**.
+Este es el repositorio del front-end para el sitio web de **Panadería**, desarrollado con **Next.js 15**, **React** y **Tailwind CSS**.
 
 El proyecto está diseñado para ser rápido, modular y fácil de mantener, siguiendo las mejores prácticas de desarrollo moderno.
 
@@ -85,4 +85,4 @@ La forma más fácil de desplegar esta aplicación es usando [Vercel](https://ve
 
 ## 📄 Licencia
 
-Este proyecto es de uso privado para Panadería La Espiga.
+Este proyecto es de uso privado.

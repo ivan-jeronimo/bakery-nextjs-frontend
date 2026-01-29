@@ -16,7 +16,7 @@ export default function LogoMottoSection({ logo, motto }: LogoMottoSectionProps)
           <div className="mb-4 w-48 h-48 md:w-64 md:h-64 relative flex items-center justify-center z-30">
               <img 
                   src={imgSrc} 
-                  alt="Logo Panciencia" 
+                  alt="Logo Panaderia"
                   className="w-full h-full object-contain drop-shadow-sm"
                   onError={(e) => {
                     console.error("❌ Error cargando la imagen del logo:", logo);
